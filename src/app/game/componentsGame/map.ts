@@ -82,28 +82,31 @@ export class Map extends ComponentGame {
                     layersMap.push(tsm)
                     orderLayer++
                 }
-                /*if (e.name == "collisions" ||
+
+                if (e.name == "collisions" ||
                 e.name == "collision" ||
                 e.name == "COLLISIONS"
                 ) {
-                   await e.objects.map(async (et: any, i: number) => {
+                   await Promise.all(
+                    e.objects.map(async (et: any, i: number) => {
                         var polygon = et.polygon
                         var inP = {x: 0, y: 0}
-                        et.properties.map(async (et2: any, i: number) => {
-                            if (et2.name == "initialPoint") {
-                                var v = JSON.parse(et2.value)
-                                inP = {x: v.x, y: v.y}
-                            }
-                        })
+                        await Promise.all(
+                            et.properties.map(async (et2: any, i: number) => {
+                                if (et2.name == "initialPoint") {
+                                    var v = et2.value
+                                    inP = {x: v.x, y: v.y}
+                                }
+                            })
+                        )
                         const colli = {
                             initialPoint: inP,
                             polygon: polygon
                         }
                         collisions.push(colli)
                     }) 
-                }*/
-                
-    
+                   )
+                }
             })
         )
 
