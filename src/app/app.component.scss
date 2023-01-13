@@ -1,0 +1,21 @@
+#layers-game{
+
+    #game{
+        width: 100%;
+        height: calc(100% - 50px);
+        position: absolute;
+        z-index: 1;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+
+    }
+
+    #options{
+        width: 50px;
+        height: 50px;
+        background-color: rgb(122, 122, 122);
+        position: relative;
+        z-index: 2;
+    }
+}
