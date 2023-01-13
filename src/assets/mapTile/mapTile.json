@@ -580,7 +580,7 @@
                         {
                          "name":"initialPoint",
                          "type":"string",
-                         "value":"{x:2200, y:252}"
+                         "value":"{\"x\":2200, \"y\":252}"
                         }],
                  "rotation":0,
                  "visible":true,

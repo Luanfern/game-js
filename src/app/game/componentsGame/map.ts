@@ -94,7 +94,7 @@ export class Map extends ComponentGame {
                         await Promise.all(
                             et.properties.map(async (et2: any, i: number) => {
                                 if (et2.name == "initialPoint") {
-                                    var v = et2.value
+                                    var v = JSON.parse(et2.value)
                                     inP = {x: v.x, y: v.y}
                                 }
                             })
@@ -103,6 +103,7 @@ export class Map extends ComponentGame {
                             initialPoint: inP,
                             polygon: polygon
                         }
+                        console.log(inP)
                         collisions.push(colli)
                     }) 
                    )
@@ -204,6 +205,14 @@ export class Map extends ComponentGame {
             
         }
         mapIndex = 0;
+
+        for (let polygonsIndex = 0; polygonsIndex < mi.collisions.length; polygonsIndex++) {
+            var xpolygon = mi.collisions[polygonsIndex].initialPoint.x
+            var ypolygon = mi.collisions[polygonsIndex].initialPoint.y
+            this.ctx!.fillStyle = '#FFF'
+            this.ctx.fillText(`${mi.collisions[polygonsIndex].initialPoint.x}`, xpolygon, ypolygon);// show values
+           
+        }
         
        }
 
