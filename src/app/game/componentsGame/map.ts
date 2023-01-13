@@ -13,10 +13,6 @@ export class Map extends ComponentGame {
     loadMapInformations: boolean = false
     mapInformations!: MapInformations;
 
-    //LOAD MAP
-    countSteps:number = 0
-    maxSteps: number =  0
-
     constructor(size: Size, position: Position, mapImage: HTMLImageElement, scaleMap: number, ctx: CanvasRenderingContext2D) {
         super(ctx, size, position);
         this.scaleMap = scaleMap
@@ -25,24 +21,25 @@ export class Map extends ComponentGame {
 
     async loadTiled() {
         var loadMapFunctions = new LoadMapFunctions()
-        await loadMapFunctions.loadJson('../../../assets/mapTile/mapTile.json').then(async (map) => {
-            this.maxSteps = map.tilesets.length + (map.layers.length - 1)
-            var tilewidth = map.tilewidth
-            var tileheight = map.tileheight
-            var tilesQtdMapWidth = map.width
-            var tilesQtdMapHeight = map.height
-            var width = (map.width * tilewidth)
-            var height = (map.height * tileheight)
+        var map = await loadMapFunctions.loadJson('../../../assets/mapTile/mapTile.json')
 
-            var tilesetsMap: TilesetMap[] = []
-            var layersMap: LayersMap[] = []
-            var collisions: Collision[] = []
-            var orderLayer = 0
+        var tilewidth = map.tilewidth
+        var tileheight = map.tileheight
+        var tilesQtdMapWidth = map.width
+        var tilesQtdMapHeight = map.height
+        var width = (map.width * tilewidth)
+        var height = (map.height * tileheight)
 
-            //set size of map
-            this.size = {w:width + (2*tilewidth), h:height + (2*tileheight)}
+        var tilesetsMap: TilesetMap[] = []
+        var layersMap: LayersMap[] = []
+        var collisions: Collision[] = []
+        var orderLayer = 0
 
-            await map.tilesets.map(async (e: any, i: number) => {
+        //set size of map
+        this.size = {w:width + (2*tilewidth), h:height + (2*tileheight)}
+
+        await Promise.all(
+            map.tilesets.map(async (e: any, i: number) => {
                 var source = e.source
                 await loadMapFunctions.loadJson(`../../../assets/mapTile/${source}`)
                 .then((tileInfo) => {
@@ -58,7 +55,7 @@ export class Map extends ComponentGame {
                     var image = new Image();
                     image.src = `../../../assets/mapTile/${tileInfo.image}`;
                     //image.onload = drawFunction;
-
+    
                     const tsm = {
                         rows: rows,
                         cols: cols,
@@ -68,13 +65,14 @@ export class Map extends ComponentGame {
                         tileImage: image
                     }
                     tilesetsMap.push(tsm)
-                    this.countSteps++
                 }).catch(() => {
                     console.log('ERRO LOAD TILESETS!')
                 })
             })
+        )
 
-            await map.layers.map(async (e: any, i: number) => {
+        await Promise.all(
+            map.layers.map(async (e: any, i: number) => {
                 if (e.type == "tilelayer") {
                     var data = e.data
                     const tsm = {
@@ -83,7 +81,6 @@ export class Map extends ComponentGame {
                     }
                     layersMap.push(tsm)
                     orderLayer++
-                    this.countSteps++
                 }
                 /*if (e.name == "collisions" ||
                 e.name == "collision" ||
@@ -106,21 +103,23 @@ export class Map extends ComponentGame {
                     }) 
                 }*/
                 
-
+    
             })
+        )
 
-            this.mapInformations = {
-                tileWidth: tilewidth,
-                tileHeight: tileheight,
-                tilesQtdMapWidth: tilesQtdMapWidth,
-                tilesQtdMapHeight: tilesQtdMapHeight,
-                mapWidth: width,
-                mapHeight: height,
-                mapTilesets: tilesetsMap,
-                mapLayers: layersMap,
-                collisions: collisions
-            }
-        })
+        this.mapInformations = {
+            tileWidth: tilewidth,
+            tileHeight: tileheight,
+            tilesQtdMapWidth: tilesQtdMapWidth,
+            tilesQtdMapHeight: tilesQtdMapHeight,
+            mapWidth: width,
+            mapHeight: height,
+            mapTilesets: tilesetsMap,
+            mapLayers: layersMap,
+            collisions: collisions
+        }
+
+        this.loadMapInformations = true
     }
 
     draw(): void {
@@ -209,9 +208,13 @@ export class Map extends ComponentGame {
        //this.ctx.drawImage(this.mapImage!, 0, 0, this.size.w, this.size.h, this.position.x, this.position.y, this.size.w * this.scaleMap, this.size.h * this.scaleMap)
     }
     update(): void {
-        if (this.maxSteps != 0
+     /*   if (this.maxSteps != 0
             && this.countSteps == this.maxSteps
             && this.mapInformations != undefined) {
+            this.draw()
+        }*/
+
+        if (this.loadMapInformations) {
             this.draw()
         }
     }
