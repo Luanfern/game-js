@@ -90,6 +90,7 @@ export class Map extends ComponentGame {
                    await Promise.all(
                     e.objects.map(async (et: any, i: number) => {
                         var polygon = et.polygon
+                        var sizeRectBase = {w: et.x, h: et.y}
                         var inP = {x: 0, y: 0}
                         await Promise.all(
                             et.properties.map(async (et2: any, i: number) => {
@@ -101,7 +102,8 @@ export class Map extends ComponentGame {
                         )
                         const colli = {
                             initialPoint: inP,
-                            polygon: polygon
+                            polygon: polygon,
+                            sizeRectBase: sizeRectBase
                         }
                         console.log(inP)
                         collisions.push(colli)
@@ -210,7 +212,69 @@ export class Map extends ComponentGame {
             var xpolygon = mi.collisions[polygonsIndex].initialPoint.x
             var ypolygon = mi.collisions[polygonsIndex].initialPoint.y
             this.ctx!.fillStyle = '#FFF'
-            this.ctx.fillText(`${mi.collisions[polygonsIndex].initialPoint.x}`, xpolygon, ypolygon);// show values
+
+            //this.ctx.fillText(`${mi.collisions[polygonsIndex].initialPoint.x}`, xpolygon, ypolygon);// show values
+
+            var polygonPoints = mi.collisions[polygonsIndex].polygon
+
+            var currentPointX = xpolygon
+            var currentPointY = ypolygon
+            for (let ipolypoints = 0; ipolypoints < polygonPoints.length; ipolypoints++) {
+                var pointMoreX = polygonPoints[ipolypoints].x
+                var pointMoreY = polygonPoints[ipolypoints].y
+                //calc X
+                var ppx = xpolygon + pointMoreX
+                var ppy = ypolygon + (pointMoreX/2)
+                //calc Y
+                ppx = ppx - pointMoreY
+                ppy = ppy + (pointMoreY/2)
+
+                this.ctx.beginPath();
+                this.ctx.moveTo(currentPointX, currentPointY);
+                this.ctx.lineTo(ppx, ppy);
+                this.ctx.strokeStyle = "#fff";
+                this.ctx.lineWidth   = 2;            
+                this.ctx.stroke();
+                this.ctx.fillStyle = "steelblue";
+                //this.ctx.fillText(`${countteste}`, ppx, ppy);// show values - second point should be Here! in X + Y
+
+                currentPointX = ppx
+                currentPointY = ppy
+    
+                //this.ctx.fillText(`${mi.collisions[polygonsIndex].initialPoint.x}`, currentPointX, currentPointY);// show values
+                //this.ctx.fillText(`${currentPointX+pointMoreX}, ${currentPointY+pointMoreY}`, currentPointX+pointMoreX, currentPointY+pointMoreY);// show values
+                
+            }
+
+            this.ctx.beginPath();
+            this.ctx.moveTo(currentPointX, currentPointY);
+            this.ctx.lineTo(xpolygon, ypolygon);
+            this.ctx.strokeStyle = "#fff";
+            this.ctx.lineWidth   = 2;            
+            this.ctx.stroke();
+            
+            this.ctx.strokeStyle = "#000";
+
+            /**
+             * 
+             * 2324, 252
+                2203, 355
+                2470, 500
+                2600, 405
+
+             */
+
+                /*
+                this.ctx.fillText(`o`, 2324, 252);// show values
+                this.ctx.fillText(`o`, 2203, 355);// show values
+                this.ctx.fillText(`o`, 2470, 500);// show values
+                this.ctx.fillText(`o`, 2600, 405);// show values
+                */
+           // this.ctx.beginPath();
+            //this.ctx.moveTo(xpolygon, ypolygon);
+            //this.ctx.lineTo(xpolygon+300, ypolygon+150);
+            //this.ctx.strokeStyle = "#FFF";
+            //this.ctx.stroke();
            
         }
         
@@ -220,12 +284,6 @@ export class Map extends ComponentGame {
        //this.ctx.drawImage(this.mapImage!, 0, 0, this.size.w, this.size.h, this.position.x, this.position.y, this.size.w * this.scaleMap, this.size.h * this.scaleMap)
     }
     update(): void {
-     /*   if (this.maxSteps != 0
-            && this.countSteps == this.maxSteps
-            && this.mapInformations != undefined) {
-            this.draw()
-        }*/
-
         if (this.loadMapInformations) {
             this.draw()
         }
