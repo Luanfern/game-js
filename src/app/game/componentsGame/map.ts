@@ -1,132 +1,27 @@
 import { ComponentGame } from "../abstractions/componentGame";
 import DrawMapFunctions from "../functions/DrawMapFunctions";
-import LoadMapFunctions from "../functions/LoadMapFunctions";
-import { Collision } from "../interfaces/collision.interface";
-import { LayersMap } from "../interfaces/layersMap.interface";
 import { MapInformations } from "../interfaces/mapInformations.interface";
 import { Position } from "../interfaces/position.interface";
 import { Size } from "../interfaces/size.interface";
-import { TilesetMap } from "../interfaces/tilesetmap.interface";
 
 export class Map extends ComponentGame {
     mapImage: HTMLImageElement | undefined
     scaleMap: number = 1
-    loadMapInformations: boolean = false
     mapInformations!: MapInformations;
 
-    constructor(size: Size, position: Position, mapImage: HTMLImageElement, scaleMap: number, ctx: CanvasRenderingContext2D) {
+    constructor(
+        size: Size,
+        position: Position,
+        mapImage: HTMLImageElement,
+        scaleMap: number,
+        ctx: CanvasRenderingContext2D,
+        mapInformations: MapInformations
+        ) {
         super(ctx, size, position);
         this.scaleMap = scaleMap
         this.mapImage = mapImage
-    }
-
-    async loadTiled() {
-        var loadMapFunctions = new LoadMapFunctions()
-        var map = await loadMapFunctions.loadJson('../../../assets/mapTile/mapTile.json')
-
-        var tilewidth = map.tilewidth
-        var tileheight = map.tileheight
-        var tilesQtdMapWidth = map.width
-        var tilesQtdMapHeight = map.height
-        var width = (map.width * tilewidth)
-        var height = (map.height * tileheight)
-
-        var tilesetsMap: TilesetMap[] = []
-        var layersMap: LayersMap[] = []
-        var collisions: Collision[] = []
-        var orderLayer = 0
-
-        //set size of map
-        this.size = {w:width + (2*tilewidth), h:height + (2*tileheight)}
-
-        await Promise.all(
-            map.tilesets.map(async (e: any, i: number) => {
-                var source = e.source
-                await loadMapFunctions.loadJson(`../../../assets/mapTile/${source}`)
-                .then((tileInfo) => {
-                    var cols = tileInfo.columns as number
-                    var rows = (tileInfo.tilecount / tileInfo.columns) as number
-                    var minGId = map.tilesets[i].firstgid
-                    var maxGId = 0
-                    if (i + 1 < map.tilesets.length) {
-                        maxGId = map.tilesets[i + 1].firstgid - 1
-                    } else {
-                        maxGId = map.tilesets[i].firstgid + tileInfo.tilecount
-                    }
-                    var image = new Image();
-                    image.src = `../../../assets/mapTile/${tileInfo.image}`;
-                    //image.onload = drawFunction;
-    
-                    const tsm = {
-                        rows: rows,
-                        cols: cols,
-                        tileset: source,
-                        minGId: minGId,
-                        maxGId:maxGId,
-                        tileImage: image
-                    }
-                    tilesetsMap.push(tsm)
-                }).catch(() => {
-                    console.log('ERRO LOAD TILESETS!')
-                })
-            })
-        )
-
-        await Promise.all(
-            map.layers.map(async (e: any, i: number) => {
-                if (e.type == "tilelayer") {
-                    var data = e.data
-                    const tsm = {
-                        layerOrder: orderLayer,
-                        data: data
-                    }
-                    layersMap.push(tsm)
-                    orderLayer++
-                }
-
-                if (e.name == "collisions" ||
-                e.name == "collision" ||
-                e.name == "COLLISIONS"
-                ) {
-                   await Promise.all(
-                    e.objects.map(async (et: any, i: number) => {
-                        var polygon = et.polygon
-                        var sizeRectBase = {w: et.x, h: et.y}
-                        var inP = {x: 0, y: 0}
-                        await Promise.all(
-                            et.properties.map(async (et2: any, i: number) => {
-                                if (et2.name == "initialPoint") {
-                                    var v = JSON.parse(et2.value)
-                                    inP = {x: v.x, y: v.y}
-                                }
-                            })
-                        )
-                        const colli = {
-                            initialPoint: inP,
-                            polygon: polygon,
-                            sizeRectBase: sizeRectBase
-                        }
-                        console.log(inP)
-                        collisions.push(colli)
-                    }) 
-                   )
-                }
-            })
-        )
-
-        this.mapInformations = {
-            tileWidth: tilewidth,
-            tileHeight: tileheight,
-            tilesQtdMapWidth: tilesQtdMapWidth,
-            tilesQtdMapHeight: tilesQtdMapHeight,
-            mapWidth: width,
-            mapHeight: height,
-            mapTilesets: tilesetsMap,
-            mapLayers: layersMap,
-            collisions: collisions
-        }
-
-        this.loadMapInformations = true
+        this.size = mapInformations.sizeMap
+        this.mapInformations = mapInformations
     }
 
     draw(): void {
@@ -208,60 +103,10 @@ export class Map extends ComponentGame {
             
         }
         mapIndex = 0;
-
-        //Collisions
-
-        var drawFunctions = new DrawMapFunctions()
-
-        for (let polygonsIndex = 0; polygonsIndex < mi.collisions.length; polygonsIndex++) {
-            this.ctx!.fillStyle = '#FFF'
-
-            var polygonPoints = mi.collisions[polygonsIndex].polygon
-
-            var initialPosition = drawFunctions.calcIsometricPositions(
-                mi.collisions[polygonsIndex].sizeRectBase.w * this.scaleMap,
-                mi.collisions[polygonsIndex].sizeRectBase.h * this.scaleMap,
-                ((mi.mapWidth/2)+32) * this.scaleMap,
-                (mi.tileHeight+16) * this.scaleMap)
-
-            var currentPointX = initialPosition.x
-            var currentPointY = initialPosition.y
-            for (let ipolypoints = 0; ipolypoints < polygonPoints.length; ipolypoints++) {
-                var pointMoreX = polygonPoints[ipolypoints].x * this.scaleMap
-                var pointMoreY = polygonPoints[ipolypoints].y * this.scaleMap
-
-                var positionsxy = drawFunctions.calcIsometricPositions(pointMoreX, pointMoreY, initialPosition.x, initialPosition.y)
-
-                this.ctx.beginPath();
-                this.ctx.moveTo(currentPointX, currentPointY);
-                this.ctx.lineTo(positionsxy.x, positionsxy.y);
-                this.ctx.strokeStyle = "#fff";
-                this.ctx.lineWidth   = 2;            
-                this.ctx.stroke();
-                this.ctx.fillStyle = "steelblue";
-
-                currentPointX = positionsxy.x
-                currentPointY = positionsxy.y
-                
-            }
-
-            this.ctx.beginPath();
-            this.ctx.moveTo(currentPointX, currentPointY);
-            this.ctx.lineTo(initialPosition.x, initialPosition.y);
-            this.ctx.strokeStyle = "#fff";
-            this.ctx.lineWidth   = 2;            
-            this.ctx.stroke();
-            
-            this.ctx.strokeStyle = "#000";
-           
-        }
-        
        }
 
     }
     update(): void {
-        if (this.loadMapInformations) {
             this.draw()
-        }
     }
 }

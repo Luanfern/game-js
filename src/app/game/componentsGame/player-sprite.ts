@@ -1,4 +1,3 @@
-import { ComponentGame } from "../abstractions/componentGame";
 import { ComponentPlayer } from "../abstractions/componentPlayer";
 import { Position } from "../interfaces/position.interface";
 import { Size } from "../interfaces/size.interface";
@@ -8,6 +7,8 @@ export class SpritePlayer extends ComponentPlayer{
     scaleMap: number = 1
     mobilityZone: boolean = false
     animationTimer: any
+    collisionState: boolean = true
+    levelZPlayer: number = 1
 
     constructor(
         position: Position,
@@ -47,8 +48,8 @@ export class SpritePlayer extends ComponentPlayer{
         }
 
         dash(e:MouseEvent){
-            let px = this.position.x
-            let py = this.position.y
+            /*let px = this.position.x > innerWidth ? (this.position.x/innerWidth - Math.floor(this.position.x/innerWidth)) * innerWidth : this.position.x//this.position.x
+            let py = this.position.y > innerHeight ? (this.position.y/innerHeight - Math.floor(this.position.x/innerHeight)) * innerHeight : this.position.y
             let cx = e.clientX - (this.size.w/2)
             let cy = e.clientY - (this.size.h/2)
         
@@ -58,6 +59,13 @@ export class SpritePlayer extends ComponentPlayer{
             let a = (cx-px!)
             let b = (cy-py!)
             let c = Math.sqrt(Math.pow(a,2)+Math.pow(b,2))
+
+            console.log(px)
+            console.log(py)
+            console.log(this.position.x)
+            console.log(this.position.y)
+            console.log(cx)
+            console.log(cy)
 
             console.log('max distance possible: ' + (this.zoneRadiusControl! + 20 * this.scaleMap))
             console.log('>=')
@@ -76,12 +84,12 @@ export class SpritePlayer extends ComponentPlayer{
               }, 10)
               this.mobilityChange()
             }
+            */
           }
         
           mobilityChange(){
             this.mobilityZone = !this.mobilityZone
             console.log(this.mobilityZone)
-            alert(this.zoneRadiusControl)
             this.mobilityZone ? this.resizeZoneRadiusControl(2.8) : this.resizeZoneRadiusControl(0.357142857143)
           }
 

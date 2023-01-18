@@ -578,9 +578,9 @@
                         }],
                  "properties":[
                         {
-                         "name":"initialPoint",
-                         "type":"string",
-                         "value":"{\"x\":2324, \"y\":252}"
+                         "name":"levelZ",
+                         "type":"int",
+                         "value":1
                         }],
                  "rotation":0,
                  "visible":true,
@@ -612,9 +612,9 @@
                         }],
                  "properties":[
                         {
-                         "name":"initialPoint",
-                         "type":"string",
-                         "value":"{\"x\":2324, \"y\":252}"
+                         "name":"levelZ",
+                         "type":"int",
+                         "value":1
                         }],
                  "rotation":0,
                  "visible":true,
