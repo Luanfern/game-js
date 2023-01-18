@@ -1,4 +1,5 @@
 import { ComponentGame } from "../abstractions/componentGame";
+import DrawMapFunctions from "../functions/DrawMapFunctions";
 import LoadMapFunctions from "../functions/LoadMapFunctions";
 import { Collision } from "../interfaces/collision.interface";
 import { LayersMap } from "../interfaces/layersMap.interface";
@@ -208,80 +209,55 @@ export class Map extends ComponentGame {
         }
         mapIndex = 0;
 
-        for (let polygonsIndex = 0; polygonsIndex < mi.collisions.length; polygonsIndex++) {
-            var xpolygon = mi.collisions[polygonsIndex].initialPoint.x
-            var ypolygon = mi.collisions[polygonsIndex].initialPoint.y
-            this.ctx!.fillStyle = '#FFF'
+        //Collisions
 
-            //this.ctx.fillText(`${mi.collisions[polygonsIndex].initialPoint.x}`, xpolygon, ypolygon);// show values
+        var drawFunctions = new DrawMapFunctions()
+
+        for (let polygonsIndex = 0; polygonsIndex < mi.collisions.length; polygonsIndex++) {
+            this.ctx!.fillStyle = '#FFF'
 
             var polygonPoints = mi.collisions[polygonsIndex].polygon
 
-            var currentPointX = xpolygon
-            var currentPointY = ypolygon
+            var initialPosition = drawFunctions.calcIsometricPositions(
+                mi.collisions[polygonsIndex].sizeRectBase.w * this.scaleMap,
+                mi.collisions[polygonsIndex].sizeRectBase.h * this.scaleMap,
+                ((mi.mapWidth/2)+32) * this.scaleMap,
+                (mi.tileHeight+16) * this.scaleMap)
+
+            var currentPointX = initialPosition.x
+            var currentPointY = initialPosition.y
             for (let ipolypoints = 0; ipolypoints < polygonPoints.length; ipolypoints++) {
-                var pointMoreX = polygonPoints[ipolypoints].x
-                var pointMoreY = polygonPoints[ipolypoints].y
-                //calc X
-                var ppx = xpolygon + pointMoreX
-                var ppy = ypolygon + (pointMoreX/2)
-                //calc Y
-                ppx = ppx - pointMoreY
-                ppy = ppy + (pointMoreY/2)
+                var pointMoreX = polygonPoints[ipolypoints].x * this.scaleMap
+                var pointMoreY = polygonPoints[ipolypoints].y * this.scaleMap
+
+                var positionsxy = drawFunctions.calcIsometricPositions(pointMoreX, pointMoreY, initialPosition.x, initialPosition.y)
 
                 this.ctx.beginPath();
                 this.ctx.moveTo(currentPointX, currentPointY);
-                this.ctx.lineTo(ppx, ppy);
+                this.ctx.lineTo(positionsxy.x, positionsxy.y);
                 this.ctx.strokeStyle = "#fff";
                 this.ctx.lineWidth   = 2;            
                 this.ctx.stroke();
                 this.ctx.fillStyle = "steelblue";
-                //this.ctx.fillText(`${countteste}`, ppx, ppy);// show values - second point should be Here! in X + Y
 
-                currentPointX = ppx
-                currentPointY = ppy
-    
-                //this.ctx.fillText(`${mi.collisions[polygonsIndex].initialPoint.x}`, currentPointX, currentPointY);// show values
-                //this.ctx.fillText(`${currentPointX+pointMoreX}, ${currentPointY+pointMoreY}`, currentPointX+pointMoreX, currentPointY+pointMoreY);// show values
+                currentPointX = positionsxy.x
+                currentPointY = positionsxy.y
                 
             }
 
             this.ctx.beginPath();
             this.ctx.moveTo(currentPointX, currentPointY);
-            this.ctx.lineTo(xpolygon, ypolygon);
+            this.ctx.lineTo(initialPosition.x, initialPosition.y);
             this.ctx.strokeStyle = "#fff";
             this.ctx.lineWidth   = 2;            
             this.ctx.stroke();
             
             this.ctx.strokeStyle = "#000";
-
-            /**
-             * 
-             * 2324, 252
-                2203, 355
-                2470, 500
-                2600, 405
-
-             */
-
-                /*
-                this.ctx.fillText(`o`, 2324, 252);// show values
-                this.ctx.fillText(`o`, 2203, 355);// show values
-                this.ctx.fillText(`o`, 2470, 500);// show values
-                this.ctx.fillText(`o`, 2600, 405);// show values
-                */
-           // this.ctx.beginPath();
-            //this.ctx.moveTo(xpolygon, ypolygon);
-            //this.ctx.lineTo(xpolygon+300, ypolygon+150);
-            //this.ctx.strokeStyle = "#FFF";
-            //this.ctx.stroke();
            
         }
         
        }
 
-
-       //this.ctx.drawImage(this.mapImage!, 0, 0, this.size.w, this.size.h, this.position.x, this.position.y, this.size.w * this.scaleMap, this.size.h * this.scaleMap)
     }
     update(): void {
         if (this.loadMapInformations) {
