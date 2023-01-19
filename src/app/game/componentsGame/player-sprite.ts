@@ -1,4 +1,6 @@
 import { ComponentPlayer } from "../abstractions/componentPlayer";
+import PlayerFunctions from "../functions/PlayerFunctions";
+import { MapInformations } from "../interfaces/mapInformations.interface";
 import { Position } from "../interfaces/position.interface";
 import { Size } from "../interfaces/size.interface";
 import { Velocity } from "../interfaces/velocity.interface";
@@ -9,6 +11,8 @@ export class SpritePlayer extends ComponentPlayer{
     animationTimer: any
     collisionState: boolean = true
     levelZPlayer: number = 1
+    playerFunctions: PlayerFunctions = new PlayerFunctions()
+    mapInformations: MapInformations
 
     constructor(
         position: Position,
@@ -16,10 +20,12 @@ export class SpritePlayer extends ComponentPlayer{
         ctx: CanvasRenderingContext2D,
         scaleMap: number,
         velocity: Velocity,
-        zoneRadiusControl: number
+        zoneRadiusControl: number,
+        mapInformations: MapInformations
         ){
         super( position, size, ctx, velocity, zoneRadiusControl);
-            this.scaleMap = scaleMap
+            this.scaleMap = scaleMap,
+            this.mapInformations = mapInformations
         }
 
         draw(){
@@ -38,10 +44,10 @@ export class SpritePlayer extends ComponentPlayer{
            // console.log(this.velocity)
         }
 
-        setPosition(x: number, y: number){
+        /*setPosition(x: number, y: number){
             this.position = {x: x, y: y}
            // console.log(this.velocity)
-        }
+        }*/
 
         resizeZoneRadiusControl(resize: number){
             this.zoneRadiusControl = this.zoneRadiusControl! * resize
@@ -93,9 +99,26 @@ export class SpritePlayer extends ComponentPlayer{
             this.mobilityZone ? this.resizeZoneRadiusControl(2.8) : this.resizeZoneRadiusControl(0.357142857143)
           }
 
-        update(){
-            this.position!.x += (this.velocity!.x)
-            this.position!.y += (this.velocity!.y)
+          async move(){
+            //verify collision
+            var canWalk = this.playerFunctions.collideWithCollision(
+              this.mapInformations.collisions,
+              this.levelZPlayer,
+              {
+                x: this.position!.x + (this.velocity!.x),
+                y: this.position!.y + (this.velocity!.y)
+              },
+              this.size
+            )
+
+            if (canWalk) {
+              this.position!.x += (this.velocity!.x)
+              this.position!.y += (this.velocity!.y) 
+            }
+          }
+
+        update(){          
+            this.move()
             this.draw()
         }
 }

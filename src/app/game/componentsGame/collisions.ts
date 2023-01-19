@@ -29,48 +29,57 @@ export class Collisions extends ComponentGame {
 
         //Collisions
 
-        var drawFunctions = new DrawMapFunctions()
-
         for (let polygonsIndex = 0; polygonsIndex < mi.collisions.length; polygonsIndex++) {
             this.ctx!.fillStyle = '#FFF'
 
             var polygonPoints = mi.collisions[polygonsIndex].polygon
 
-            var initialPosition = drawFunctions.calcIsometricPositions(
-                mi.collisions[polygonsIndex].sizeRectBase.w * this.scaleMap,
-                mi.collisions[polygonsIndex].sizeRectBase.h * this.scaleMap,
-                widthZero,
-                heightZero)
-
-            var currentPointX = initialPosition.x
-            var currentPointY = initialPosition.y
+            var currentPointX = polygonPoints[0].x
+            var currentPointY = polygonPoints[0].y
             for (let ipolypoints = 0; ipolypoints < polygonPoints.length; ipolypoints++) {
-                var pointMoreX = polygonPoints[ipolypoints].x * this.scaleMap
-                var pointMoreY = polygonPoints[ipolypoints].y * this.scaleMap
-
-                var positionsxy = drawFunctions.calcIsometricPositions(pointMoreX, pointMoreY, initialPosition.x, initialPosition.y)
+                var pointMoreX = polygonPoints[ipolypoints].x
+                var pointMoreY = polygonPoints[ipolypoints].y
 
                 this.ctx.beginPath();
                 this.ctx.moveTo(currentPointX, currentPointY);
-                this.ctx.lineTo(positionsxy.x, positionsxy.y);
+                this.ctx.lineTo(pointMoreX, pointMoreY);
                 this.ctx.strokeStyle = "#fff";
                 this.ctx.lineWidth   = 2;            
                 this.ctx.stroke();
                 this.ctx.fillStyle = "steelblue";
 
-                currentPointX = positionsxy.x
-                currentPointY = positionsxy.y
+                currentPointX = pointMoreX
+                currentPointY = pointMoreY
                 
             }
 
             this.ctx.beginPath();
             this.ctx.moveTo(currentPointX, currentPointY);
-            this.ctx.lineTo(initialPosition.x, initialPosition.y);
+            this.ctx.lineTo(polygonPoints[0].x, polygonPoints[0].y);
             this.ctx.strokeStyle = "#fff";
             this.ctx.lineWidth   = 2;            
             this.ctx.stroke();
             
             this.ctx.strokeStyle = "#000";
+           
+        }
+
+        //TESTE - only points
+
+       for (let polygonsIndex = 0; polygonsIndex < mi.collisions.length; polygonsIndex++) {
+            this.ctx!.fillStyle = '#FFF'
+
+            var polygonPoints = mi.collisions[polygonsIndex].polygon
+
+            for (let ipolypoints = 0; ipolypoints < polygonPoints.length; ipolypoints++) {
+                
+                var pointMoreX = polygonPoints[ipolypoints].x
+                var pointMoreY = polygonPoints[ipolypoints].y
+
+                this.ctx.fillText(`${pointMoreX}, ${pointMoreY}`,pointMoreX,pointMoreY)
+                this.ctx!.fillStyle = '#FFF'
+                
+            }
            
         }
 

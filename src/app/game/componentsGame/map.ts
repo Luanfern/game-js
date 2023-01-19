@@ -85,21 +85,15 @@ export class Map extends ComponentGame {
                         mi?.tileWidth * this.scaleMap,
                         mi?.tileWidth * this.scaleMap,
                     );
-
-                    //this.ctx.fillText(width+', '+height+', '+tileValNormalize, (width*this.scaleMap)+20, (height*this.scaleMap)+17);// show values
                 }
                 mapIndex++;
 
                 height += mi.tileHeight/2
                 width += mi.tileWidth/2
-
-
             }
 
             height = ((mi.tileHeight * widthMatriz)/2)+ mi.tileHeight
             width = maxWidth - ((mi.tileWidth/2) * widthMatriz)
-
-
             
         }
         mapIndex = 0;

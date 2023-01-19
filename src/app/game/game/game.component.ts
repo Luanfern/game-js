@@ -21,6 +21,8 @@ export class GameComponent implements OnInit {
   loadMapInformations: boolean = false
   mapInformations!: MapInformations;
 
+  scaleMap: number = 0
+
   componentsGame: { tag: string, gc: ComponentGame }[] = []
 
 
@@ -31,35 +33,29 @@ export class GameComponent implements OnInit {
 
   async loadMap() {
     console.log('loading map datas....')
-    await new LoadMapInformations().loadTiled().then(
+    await new LoadMapInformations().loadTiled(1 + this.scaleMap).then(
       (mapInfosReturn) => {
 
         this.mapInformations = mapInfosReturn
 
         //PREPARE GAME 
-        //setScaleScreen
-        let scaleMap = 0
-        let scaleDefault = 1707
-        let rightscale = (100 - ((innerWidth * 100) / scaleDefault))
-        let rightscale2 = (rightscale * -1) / 100
-        scaleMap = rightscale2
 
         //setando background cenário
         var background = new Image()
         background.src = "../../../assets/map.png"
-        const backgroundCenario = new Map({ w: 5000, h: 5000 }, { x: 0, y: 0 }, background, 1 + scaleMap, this.ctx!, this.mapInformations)
+        const backgroundCenario = new Map({ w: 5000, h: 5000 }, { x: 0, y: 0 }, background, 1 + this.scaleMap, this.ctx!, this.mapInformations)
         this.componentsGame.push({ tag: 'backgroundCenario', gc: backgroundCenario })
 
         //setando collisions
-        const collisions = new Collisions({ w: 5000, h: 5000 }, { x: 0, y: 0 }, 1 + scaleMap, this.ctx!, this.mapInformations)
+        const collisions = new Collisions({ w: 5000, h: 5000 }, { x: 0, y: 0 }, 1 + this.scaleMap, this.ctx!, this.mapInformations)
         this.componentsGame.push({ tag: 'collisions', gc: collisions })
 
         //setando player
-        const player = new SpritePlayer({ x: 2500, y: 200 }, { w: 30, h: 30 }, this.ctx!, 1 + scaleMap, { x: 0, y: 0 }, 90)
+        const player = new SpritePlayer({ x: 2500, y: 200 }, { w: 30, h: 30 }, this.ctx!, 1 + this.scaleMap, { x: 0, y: 0 }, 90, this.mapInformations)
         this.componentsGame.push({ tag: 'myPlayer', gc: player })
 
         //Setando Câmera
-        const cam = new Cam(this.ctx!, { w: this.canvas!.width, h: this.canvas!.height }, { x: 0, y: 0 }, player, backgroundCenario, 1 + scaleMap, true)
+        const cam = new Cam(this.ctx!, { w: this.canvas!.width, h: this.canvas!.height }, { x: 0, y: 0 }, player, backgroundCenario, 1 + this.scaleMap, true)
         this.componentsGame.unshift({ tag: 'camGame', gc: cam })
 
         //Event of keydown
@@ -105,6 +101,14 @@ export class GameComponent implements OnInit {
     //setUp canvas size
     this.canvas.height = innerHeight
     this.canvas.width = innerWidth
+
+    //setScaleScreen
+    let scaleMap = 0
+    let scaleDefault = 1707
+    let rightscale = (100 - ((innerWidth * 100) / scaleDefault))
+    let rightscale2 = (rightscale * -1) / 100
+    scaleMap = rightscale2
+    this.scaleMap = scaleMap
 
     //setando informações do mapa e inicializando 
     await this.loadMap()

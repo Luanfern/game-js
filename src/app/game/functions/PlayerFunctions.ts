@@ -3,12 +3,12 @@ import { Position } from "../interfaces/position.interface";
 import { Size } from "../interfaces/size.interface";
 
 class PlayerFunctions {
-    async collideWithCollision(
+    collideWithCollision(
         collisionsList: Collision[],
         levelZPlayer: number,
         futurePositionPlayer: Position,
         sizePlayer: Size
-    ): Promise<any>{
+    ): any{
         return true
       }
 }
