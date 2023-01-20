@@ -40,31 +40,26 @@ export class Collisions extends ComponentGame {
                 var pointMoreX = polygonPoints[ipolypoints].x
                 var pointMoreY = polygonPoints[ipolypoints].y
 
-                this.ctx.beginPath();
-                this.ctx.moveTo(currentPointX, currentPointY);
-                this.ctx.lineTo(pointMoreX, pointMoreY);
-                this.ctx.strokeStyle = "#fff";
-                this.ctx.lineWidth   = 2;            
-                this.ctx.stroke();
-                this.ctx.fillStyle = "steelblue";
+                var indice = 200
+                var bfnx = (currentPointX-pointMoreX)/indice
+                var bfny = (currentPointY-pointMoreY)/indice
+                var fnx = bfnx
+                var fny = bfny
+                for (let i = 0; i < indice; i++) {
+                    this.ctx.fillText(`O`,currentPointX-fnx,currentPointY-fny)             
+                    fnx+=bfnx
+                    fny+=bfny
+                }
 
                 currentPointX = pointMoreX
                 currentPointY = pointMoreY
                 
             }
-
-            this.ctx.beginPath();
-            this.ctx.moveTo(currentPointX, currentPointY);
-            this.ctx.lineTo(polygonPoints[0].x, polygonPoints[0].y);
-            this.ctx.strokeStyle = "#fff";
-            this.ctx.lineWidth   = 2;            
-            this.ctx.stroke();
-            
             this.ctx.strokeStyle = "#000";
            
         }
 
-        //TESTE - only points
+       /* //TESTE - only points
 
        for (let polygonsIndex = 0; polygonsIndex < mi.collisions.length; polygonsIndex++) {
             this.ctx!.fillStyle = '#FFF'
@@ -76,12 +71,12 @@ export class Collisions extends ComponentGame {
                 var pointMoreX = polygonPoints[ipolypoints].x
                 var pointMoreY = polygonPoints[ipolypoints].y
 
-                this.ctx.fillText(`${pointMoreX}, ${pointMoreY}`,pointMoreX,pointMoreY)
+                this.ctx.fillText(`${pointMoreX.toFixed(2)}, ${pointMoreY.toFixed(2)}`,pointMoreX,pointMoreY)
                 this.ctx!.fillStyle = '#FFF'
                 
             }
            
-        }
+        }*/
 
     }
     update(): void {

@@ -108,7 +108,8 @@ export class SpritePlayer extends ComponentPlayer{
                 x: this.position!.x + (this.velocity!.x),
                 y: this.position!.y + (this.velocity!.y)
               },
-              this.size
+              this.size,
+              this.ctx
             )
 
             if (canWalk) {
