@@ -5,6 +5,7 @@ import { Collisions } from '../componentsGame/collisions';
 import { Map } from '../componentsGame/map';
 import { SpritePlayer } from '../componentsGame/player-sprite';
 import LoadMapInformations from '../functions/LoadMapInformations';
+import { Collision } from '../interfaces/collision.interface';
 import { MapInformations } from '../interfaces/mapInformations.interface';
 
 @Component({
@@ -23,18 +24,16 @@ export class GameComponent implements OnInit {
 
   scaleMap: number = 0
 
+  defaultCollisions!: Collision[]
+
   componentsGame: { tag: string, gc: ComponentGame }[] = []
-
-
-  //https://medium.com/geekculture/make-your-own-tile-map-with-vanilla-javascript-a627de67b7d9
-
 
   constructor() { }
 
   async loadMap() {
     console.log('loading map datas....')
     await new LoadMapInformations().loadTiled(1 + this.scaleMap).then(
-      (mapInfosReturn) => {
+      async (mapInfosReturn) => {
 
         this.mapInformations = mapInfosReturn
 
@@ -47,11 +46,13 @@ export class GameComponent implements OnInit {
         this.componentsGame.push({ tag: 'backgroundCenario', gc: backgroundCenario })
 
         //setando collisions
-        const collisions = new Collisions({ w: 5000, h: 5000 }, { x: 0, y: 0 }, 1 + this.scaleMap, this.ctx!, this.mapInformations)
-        this.componentsGame.push({ tag: 'collisions', gc: collisions })
+        await new Collisions(1 + this.scaleMap, this.mapInformations).setCollisions().then((collision) => {
+          this.defaultCollisions = collision
+          console.log(this.defaultCollisions)
+        })
 
         //setando player
-        const player = new SpritePlayer({ x: 2500, y: 200 }, { w: 30, h: 30 }, this.ctx!, 1 + this.scaleMap, { x: 0, y: 0 }, 90, this.mapInformations)
+        const player = new SpritePlayer({ x: 2500, y: 200 }, { w: 30, h: 30 }, this.ctx!, 1 + this.scaleMap, { x: 0, y: 0 }, 90, this.mapInformations, this.defaultCollisions)
         this.componentsGame.push({ tag: 'myPlayer', gc: player })
 
         //Setando Câmera
@@ -125,6 +126,12 @@ export class GameComponent implements OnInit {
       this.ctx!.save()
       this.componentsGame.forEach((v, i) => {
         v.gc.update()
+      })
+      this.ctx!.fillStyle = 'red'
+      this.defaultCollisions?.map((cl) => {
+        cl.polygon.map((cl2) => {
+          this.ctx!.fillText('O', cl2.x, cl2.y)
+        })
       })
       this.ctx!.restore()
     } 

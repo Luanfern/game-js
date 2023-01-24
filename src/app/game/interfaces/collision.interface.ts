@@ -3,6 +3,6 @@ import { Size } from './size.interface'
 
 export interface Collision{
     levelZ: number
-    sizeRectBase: Size
+    sizeRectBase: Size | undefined
     polygon: Position[]
 }

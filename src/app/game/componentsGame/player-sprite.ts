@@ -1,5 +1,6 @@
 import { ComponentPlayer } from "../abstractions/componentPlayer";
 import PlayerFunctions from "../functions/PlayerFunctions";
+import { Collision } from "../interfaces/collision.interface";
 import { MapInformations } from "../interfaces/mapInformations.interface";
 import { Position } from "../interfaces/position.interface";
 import { Size } from "../interfaces/size.interface";
@@ -13,6 +14,7 @@ export class SpritePlayer extends ComponentPlayer{
     levelZPlayer: number = 1
     playerFunctions: PlayerFunctions = new PlayerFunctions()
     mapInformations: MapInformations
+    defaultCollisions: Collision[]
 
     constructor(
         position: Position,
@@ -21,11 +23,13 @@ export class SpritePlayer extends ComponentPlayer{
         scaleMap: number,
         velocity: Velocity,
         zoneRadiusControl: number,
-        mapInformations: MapInformations
+        mapInformations: MapInformations,
+        defaultCollisions: Collision[]
         ){
         super( position, size, ctx, velocity, zoneRadiusControl);
             this.scaleMap = scaleMap,
-            this.mapInformations = mapInformations
+            this.mapInformations = mapInformations,
+            this.defaultCollisions = defaultCollisions
         }
 
         draw(){
@@ -102,20 +106,25 @@ export class SpritePlayer extends ComponentPlayer{
           async move(){
             //verify collision
             var canWalk = this.playerFunctions.collideWithCollision(
-              this.mapInformations.collisions,
+              this.defaultCollisions,
               this.levelZPlayer,
               {
                 x: this.position!.x + (this.velocity!.x),
                 y: this.position!.y + (this.velocity!.y)
               },
-              this.size,
+              {
+                w: this.size!.w  * this.scaleMap, h: this.size!.h  * this.scaleMap
+              },
               this.ctx
             )
 
-            if (canWalk) {
+            if (!canWalk) {
               this.position!.x += (this.velocity!.x)
               this.position!.y += (this.velocity!.y) 
-            }
+            }/* else {
+              this.position!.x += (this.velocity!.x)*-1
+              this.position!.y += (this.velocity!.y)*-1 
+            }*/
           }
 
         update(){          
