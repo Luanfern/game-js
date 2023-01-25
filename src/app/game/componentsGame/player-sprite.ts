@@ -39,7 +39,7 @@ export class SpritePlayer extends ComponentPlayer{
             this.ctx!.closePath();
             this.ctx!.fill();
             this.ctx!.stroke();
-            this.ctx!.fillStyle = 'red'
+            this.ctx!.fillStyle = '#E6222263'
             this.ctx!.fillRect(this.position!.x, this.position!.y, this.size!.w  * this.scaleMap, this.size!.h  * this.scaleMap)
         }
 

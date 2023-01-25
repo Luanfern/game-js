@@ -127,12 +127,14 @@ export class GameComponent implements OnInit {
       this.componentsGame.forEach((v, i) => {
         v.gc.update()
       })
-      this.ctx!.fillStyle = 'red'
+      
+      /* this.ctx!.fillStyle = 'red'
       this.defaultCollisions?.map((cl) => {
         cl.polygon.map((cl2) => {
           this.ctx!.fillText('O', cl2.x, cl2.y)
         })
-      })
+      })*/
+      
       this.ctx!.restore()
     } 
   }

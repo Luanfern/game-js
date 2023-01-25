@@ -40,7 +40,7 @@ export class Collisions {
                             var pointMoreX = pPoints.x
                             var pointMoreY = pPoints.y
 
-                            var sizeAreaForCollision = 7
+                            var sizeAreaForCollision = 5
 
                             var forCaclIndiceX = (currentPointX - pointMoreX) < 0 ? (currentPointX - pointMoreX) * -1 : (currentPointX - pointMoreX)
                             var forCaclIndiceY = (currentPointY - pointMoreY) < 0 ? (currentPointY - pointMoreY) * -1 : (currentPointY - pointMoreY)
