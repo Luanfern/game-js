@@ -48,7 +48,6 @@ export class GameComponent implements OnInit {
         //setando collisions
         await new Collisions(1 + this.scaleMap, this.mapInformations).setCollisions().then((collision) => {
           this.defaultCollisions = collision
-          console.log(this.defaultCollisions)
         })
 
         //setando player

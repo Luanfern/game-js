@@ -88,6 +88,12 @@
          "id":1,
          "name":"BaseLayer",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"levelZ",
+                 "type":"int",
+                 "value":1
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":80,
@@ -179,6 +185,12 @@
          "id":2,
          "name":"Layer2",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"levelZ",
+                 "type":"int",
+                 "value":2
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":80,
@@ -270,6 +282,12 @@
          "id":3,
          "name":"Tile Layer 3",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"levelZ",
+                 "type":"int",
+                 "value":3
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":80,
@@ -361,6 +379,12 @@
          "id":4,
          "name":"Tile Layer 4",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"levelZ",
+                 "type":"int",
+                 "value":4
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":80,
@@ -452,6 +476,12 @@
          "id":5,
          "name":"Tile Layer 5",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"levelZ",
+                 "type":"int",
+                 "value":5
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":80,
@@ -543,6 +573,12 @@
          "id":6,
          "name":"Tile Layer 6",
          "opacity":0.98,
+         "properties":[
+                {
+                 "name":"levelZ",
+                 "type":"int",
+                 "value":6
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":80,

@@ -1,4 +1,4 @@
 export interface LayersMap{
-    layerOrder: number,
+    levelZ: number,
     data: number[],
 }

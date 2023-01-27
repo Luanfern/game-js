@@ -24,7 +24,6 @@ class LoadMapInformations {
         var tilesetsMap: TilesetMap[] = []
         var layersMap: LayersMap[] = []
         var collisions: Collision[] = []
-        var orderLayer = 0
 
         //set size of map
         var sizeMap = { w: width + (2 * tilewidth), h: height + (2 * tileheight) }
@@ -66,12 +65,19 @@ class LoadMapInformations {
             map.layers.map(async (e: any, i: number) => {
                 if (e.type == "tilelayer") {
                     var data = e.data
+                    var levelZ = 1
+                    await Promise.all(
+                        e.properties.map(async (et2: any, i: number) => {
+                            if (et2.name == "levelZ") {
+                                levelZ = et2.value
+                            }
+                        })
+                    )
                     const tsm = {
-                        layerOrder: orderLayer,
+                        levelZ: levelZ,
                         data: data
                     }
                     layersMap.push(tsm)
-                    orderLayer++
                 }
 
                 if (e.name == "collisions" ||
