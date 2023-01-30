@@ -11,10 +11,11 @@ export abstract class ComponentPlayer extends ComponentGame{
         position: Position,
         size: Size,
         ctx: CanvasRenderingContext2D,
+        levelZ: number,
         velocity: Velocity,
         zoneRadiusControl: number
         ){
-        super(ctx, size, position);
+        super(ctx, size, position, levelZ);
             this.velocity = velocity
             this.zoneRadiusControl = zoneRadiusControl
             this.velocity = velocity

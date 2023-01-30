@@ -5,13 +5,16 @@ import { Size } from "../interfaces/size.interface";
 import { Map } from "./map";
 
 export class Cam extends ComponentGame{
+    setLayersLoad(layerLoad: number): void {
+        throw new Error("Method not implemented.");
+    }
     map: Map | undefined
     followerSprite: ComponentPlayer | undefined
     scaleMap: number | undefined
     centralizeCam: boolean | undefined
 
-    constructor(ctx: CanvasRenderingContext2D, size: Size, position: Position, followerSprite: ComponentPlayer, map: Map, scaleMap: number, centralizeCam: boolean){
-        super(ctx, size, position);
+    constructor(ctx: CanvasRenderingContext2D, size: Size, position: Position, followerSprite: ComponentPlayer, map: Map, scaleMap: number, centralizeCam: boolean, levelZ: number){
+        super(ctx, size, position, levelZ);
         this.map = map
         this.followerSprite = followerSprite
         this.scaleMap = scaleMap
