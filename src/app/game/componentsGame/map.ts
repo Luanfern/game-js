@@ -13,6 +13,8 @@ export class Map extends ComponentGame {
     mapInformations!: MapInformations;
     drawMapFunctions = new DrawMapFunctions()
 
+    layerToLoad: number | undefined
+
     constructor(
         size: Size,
         position: Position,
@@ -29,6 +31,14 @@ export class Map extends ComponentGame {
         this.mapInformations = mapInformations
     }
 
+    getLevelLayers(): number{
+        return this.mapInformations.mapLayers.length
+    }
+
+    setLayerToLoad(layer: number){
+        this.layerToLoad = layer
+    }
+
     draw(): void {
         this.ctx!.fillStyle = '#1c1c1c'
         this.ctx!.fillRect(0, 0, this.size!.w * this.scaleMap, this.size!.h * this.scaleMap)
@@ -36,7 +46,6 @@ export class Map extends ComponentGame {
         var mi = this.mapInformations
 
         for (let layers = 0; layers < mi.mapLayers.length; layers++) {
-            const dataLayer = mi.mapLayers[layers].data;
 
             this.drawMapFunctions.drawLayerMap(
                 mi.mapWidth,
