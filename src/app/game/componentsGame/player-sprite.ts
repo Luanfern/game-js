@@ -7,6 +7,9 @@ import { Size } from "../interfaces/size.interface";
 import { Velocity } from "../interfaces/velocity.interface";
 
 export class SpritePlayer extends ComponentPlayer{
+  setLayersLoad(layerLoad: number): void {
+    throw new Error("Method not implemented.");
+  }
     scaleMap: number = 1
     mobilityZone: boolean = false
     animationTimer: any
@@ -24,9 +27,10 @@ export class SpritePlayer extends ComponentPlayer{
         velocity: Velocity,
         zoneRadiusControl: number,
         mapInformations: MapInformations,
-        defaultCollisions: Collision[]
+        defaultCollisions: Collision[],
+        levelZ: number
         ){
-        super( position, size, ctx, velocity, zoneRadiusControl);
+        super( position, size, ctx, levelZ, velocity, zoneRadiusControl, );
             this.scaleMap = scaleMap,
             this.mapInformations = mapInformations,
             this.defaultCollisions = defaultCollisions

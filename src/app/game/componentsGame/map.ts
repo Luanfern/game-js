@@ -5,6 +5,9 @@ import { Position } from "../interfaces/position.interface";
 import { Size } from "../interfaces/size.interface";
 
 export class Map extends ComponentGame {
+    setLayersLoad(layerLoad: number): void {
+        throw new Error("Method not implemented.");
+    }
     mapImage: HTMLImageElement | undefined
     scaleMap: number = 1
     mapInformations!: MapInformations;
@@ -16,9 +19,10 @@ export class Map extends ComponentGame {
         mapImage: HTMLImageElement,
         scaleMap: number,
         ctx: CanvasRenderingContext2D,
-        mapInformations: MapInformations
+        mapInformations: MapInformations,
+        levelZ: number
     ) {
-        super(ctx, size, position);
+        super(ctx, size, position, levelZ);
         this.scaleMap = scaleMap
         this.mapImage = mapImage
         this.size = mapInformations.sizeMap

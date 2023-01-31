@@ -42,7 +42,7 @@ export class GameComponent implements OnInit {
         //setando background cenário
         var background = new Image()
         background.src = "../../../assets/map.png"
-        const backgroundCenario = new Map({ w: 5000, h: 5000 }, { x: 0, y: 0 }, background, 1 + this.scaleMap, this.ctx!, this.mapInformations)
+        const backgroundCenario = new Map({ w: 5000, h: 5000 }, { x: 0, y: 0 }, background, 1 + this.scaleMap, this.ctx!, this.mapInformations, 0)
         this.componentsGame.push({ tag: 'backgroundCenario', gc: backgroundCenario })
 
         //setando collisions
@@ -51,11 +51,11 @@ export class GameComponent implements OnInit {
         })
 
         //setando player
-        const player = new SpritePlayer({ x: 2500, y: 200 }, { w: 30, h: 30 }, this.ctx!, 1 + this.scaleMap, { x: 0, y: 0 }, 90, this.mapInformations, this.defaultCollisions)
+        const player = new SpritePlayer({ x: 2500, y: 200 }, { w: 30, h: 30 }, this.ctx!, 1 + this.scaleMap, { x: 0, y: 0 }, 90, this.mapInformations, this.defaultCollisions, 1)
         this.componentsGame.push({ tag: 'myPlayer', gc: player })
 
         //Setando Câmera
-        const cam = new Cam(this.ctx!, { w: this.canvas!.width, h: this.canvas!.height }, { x: 0, y: 0 }, player, backgroundCenario, 1 + this.scaleMap, true)
+        const cam = new Cam(this.ctx!, { w: this.canvas!.width, h: this.canvas!.height }, { x: 0, y: 0 }, player, backgroundCenario, 1 + this.scaleMap, true, 1)
         this.componentsGame.unshift({ tag: 'camGame', gc: cam })
 
         //Event of keydown
