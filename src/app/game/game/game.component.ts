@@ -7,7 +7,12 @@ import { SpritePlayer } from '../componentsGame/player-sprite';
 import LoadMapInformations from '../functions/LoadMapInformations';
 import { Collision } from '../interfaces/collision.interface';
 import { MapInformations } from '../interfaces/mapInformations.interface';
-
+interface ComponentGameListLoad{ 
+  tag: string,
+  gc: ComponentGame,
+  multipleLevels: boolean,
+  levelToLoad?: number
+}
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
@@ -26,7 +31,11 @@ export class GameComponent implements OnInit {
 
   defaultCollisions!: Collision[]
 
-  componentsGame: { tag: string, gc: ComponentGame }[] = []
+  mapTileLayers: number = 0
+
+  componentsGame: ComponentGameListLoad[] = []
+
+  cam: Cam | undefined
 
   constructor() { }
 
@@ -36,14 +45,14 @@ export class GameComponent implements OnInit {
       async (mapInfosReturn) => {
 
         this.mapInformations = mapInfosReturn
-
         //PREPARE GAME 
 
         //setando background cenário
         var background = new Image()
         background.src = "../../../assets/map.png"
         const backgroundCenario = new Map({ w: 5000, h: 5000 }, { x: 0, y: 0 }, background, 1 + this.scaleMap, this.ctx!, this.mapInformations, 0)
-        this.componentsGame.push({ tag: 'map', gc: backgroundCenario })
+        this.componentsGame.push({ tag: 'map', gc: backgroundCenario, multipleLevels: true })
+        this.mapTileLayers = backgroundCenario.getLevelLayers()
 
         //setando collisions
         await new Collisions(1 + this.scaleMap, this.mapInformations).setCollisions().then((collision) => {
@@ -51,12 +60,11 @@ export class GameComponent implements OnInit {
         })
 
         //setando player
-        const player = new SpritePlayer({ x: 2500, y: 200 }, { w: 30, h: 30 }, this.ctx!, 1 + this.scaleMap, { x: 0, y: 0 }, 90, this.mapInformations, this.defaultCollisions, 1)
-        this.componentsGame.push({ tag: 'mainPlayer', gc: player })
+        const player = new SpritePlayer({ x: 2400, y: 200 }, { w: 30, h: 30 }, this.ctx!, 1 + this.scaleMap, { x: 0, y: 0 }, 90, this.mapInformations, this.defaultCollisions, 1)
+        this.componentsGame.push({ tag: 'mainPlayer', gc: player,  multipleLevels: false})
 
         //Setando Câmera
-        const cam = new Cam(this.ctx!, { w: this.canvas!.width, h: this.canvas!.height }, { x: 0, y: 0 }, player, backgroundCenario, 1 + this.scaleMap, true, 10)
-        this.componentsGame.unshift({ tag: 'cam', gc: cam })
+        this.cam = new Cam(this.ctx!, { w: this.canvas!.width, h: this.canvas!.height }, { x: 0, y: 0 }, player, backgroundCenario, 1 + this.scaleMap, true, 1)
 
         //Event of keydown
         window.addEventListener('keydown', (event) => {
@@ -119,7 +127,58 @@ export class GameComponent implements OnInit {
 
   }
 
+  preDraw(): ComponentGameListLoad[]{
+
+    var copyList = this.componentsGame
+    var preDrawList: ComponentGameListLoad[] = []
+
+    for (let index = 1; index <= this.mapTileLayers; index++) {
+      copyList.map((v, i) => {
+        if (v.gc.levelZ == 0) {
+          if (v.multipleLevels) {
+            preDrawList.push({
+              tag: v.tag,
+              gc: v.gc,
+              multipleLevels: v.multipleLevels,
+              levelToLoad: index
+            })
+            //v.gc.setLayersLoad(index)
+            //v.gc.update()
+          } else {
+            copyList.splice(i, 1)
+          }
+        } else {
+          if (v.gc.levelZ == index) {
+            preDrawList.push({
+              tag: v.tag,
+              gc: v.gc,
+              multipleLevels: v.multipleLevels,
+            })
+            //v.gc.update()
+            //copyList.splice(i, 1)
+          }
+        }
+      })
+    }
+
+    return preDrawList
+  }
+
   animate = () => {
+    if (this.loadMapInformations) {
+      window.requestAnimationFrame(this.animate)
+      this.ctx!.save()
+
+        this.cam!.update()
+        this.preDraw().map((v, i) => {
+          if(v.levelToLoad) v.gc.setLayersLoad(v.levelToLoad)
+          v.gc.update()
+        })
+      this.ctx!.restore()
+    }
+  }
+
+  /*animate = () => {
     if (this.loadMapInformations) {
       window.requestAnimationFrame(this.animate)
       this.ctx!.save()
@@ -127,16 +186,16 @@ export class GameComponent implements OnInit {
         v.gc.update()
       })
       
-      /* this.ctx!.fillStyle = 'red'
+      this.ctx!.fillStyle = 'red'
       this.defaultCollisions?.map((cl) => {
         cl.polygon.map((cl2) => {
           this.ctx!.fillText('O', cl2.x, cl2.y)
         })
-      })*/
+      })
       
       this.ctx!.restore()
     } 
-  }
+  }*/
 
   movimentationKeys(v: number, myPlayer: SpritePlayer) {
     switch (this.keyPressControl.join().replace(',', '')) {

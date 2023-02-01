@@ -5,9 +5,6 @@ import { Position } from "../interfaces/position.interface";
 import { Size } from "../interfaces/size.interface";
 
 export class Map extends ComponentGame {
-    setLayersLoad(layerLoad: number): void {
-        throw new Error("Method not implemented.");
-    }
     mapImage: HTMLImageElement | undefined
     scaleMap: number = 1
     mapInformations!: MapInformations;
@@ -35,17 +32,20 @@ export class Map extends ComponentGame {
         return this.mapInformations.mapLayers.length
     }
 
-    setLayerToLoad(layer: number){
-        this.layerToLoad = layer
+    setLayersLoad(layerLoad: number): void {
+        this.layerToLoad = layerLoad
     }
 
     draw(): void {
-        this.ctx!.fillStyle = '#1c1c1c'
-        this.ctx!.fillRect(0, 0, this.size!.w * this.scaleMap, this.size!.h * this.scaleMap)
+
+        if(this.layerToLoad == 1) {
+            this.ctx!.fillStyle = '#1c1c1c'
+            this.ctx!.fillRect(0, 0, this.size!.w * this.scaleMap, this.size!.h * this.scaleMap)
+        }
 
         var mi = this.mapInformations
 
-        for (let layers = 0; layers < mi.mapLayers.length; layers++) {
+       // for (let layers = 0; layers < mi.mapLayers.length; layers++) {
 
             this.drawMapFunctions.drawLayerMap(
                 mi.mapWidth,
@@ -55,10 +55,10 @@ export class Map extends ComponentGame {
                 mi.tilesQtdMapWidth,
                 mi?.mapTilesets,
                 this.scaleMap,
-                mi.mapLayers[layers].data,
+                mi.mapLayers[(this.layerToLoad! - 1)].data,
                 this.ctx,
             )
-        }
+       //}
 
     }
     update(): void {
