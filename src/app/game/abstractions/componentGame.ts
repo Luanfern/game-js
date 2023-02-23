@@ -19,7 +19,7 @@ export abstract class ComponentGame{
 
     abstract draw(): void
     abstract update(): void
-    abstract setLayersLoad(layerLoad: number): void
+    abstract setLayersLoad(layerLoad: number[]): void
 
     //() => {}
 }

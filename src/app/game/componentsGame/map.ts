@@ -10,7 +10,7 @@ export class Map extends ComponentGame {
     mapInformations!: MapInformations;
     drawMapFunctions = new DrawMapFunctions()
 
-    layerToLoad: number | undefined
+    layerToLoad: number[] | undefined
 
     constructor(
         size: Size,
@@ -32,20 +32,19 @@ export class Map extends ComponentGame {
         return this.mapInformations.mapLayers.length
     }
 
-    setLayersLoad(layerLoad: number): void {
+    setLayersLoad(layerLoad: number[]): void {
         this.layerToLoad = layerLoad
     }
 
     draw(): void {
 
-        if(this.layerToLoad == 1) {
-            this.ctx!.fillStyle = '#1c1c1c'
-            this.ctx!.fillRect(0, 0, this.size!.w * this.scaleMap, this.size!.h * this.scaleMap)
-        }
-
         var mi = this.mapInformations
 
-       // for (let layers = 0; layers < mi.mapLayers.length; layers++) {
+        for (let layers = 0; layers < this.layerToLoad!.length; layers++) {
+            if(mi.mapLayers[this.layerToLoad![layers]].levelZ == 1) {
+                this.ctx!.fillStyle = '#1c1c1c'
+                this.ctx!.fillRect(0, 0, this.size!.w * this.scaleMap, this.size!.h * this.scaleMap)
+            }
 
             this.drawMapFunctions.drawLayerMap(
                 mi.mapWidth,
@@ -55,10 +54,10 @@ export class Map extends ComponentGame {
                 mi.tilesQtdMapWidth,
                 mi?.mapTilesets,
                 this.scaleMap,
-                mi.mapLayers[(this.layerToLoad! - 1)].data,
+                mi.mapLayers[this.layerToLoad![layers]].data,
                 this.ctx,
             )
-       //}
+       }
 
     }
     update(): void {

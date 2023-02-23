@@ -7,7 +7,7 @@ import { Size } from "../interfaces/size.interface";
 import { Velocity } from "../interfaces/velocity.interface";
 
 export class SpritePlayer extends ComponentPlayer{
-  setLayersLoad(layerLoad: number): void {
+  setLayersLoad(layerLoad: number[]): void {
     throw new Error("Method not implemented.");
   }
     scaleMap: number = 1

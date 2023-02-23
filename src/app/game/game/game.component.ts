@@ -11,7 +11,7 @@ interface ComponentGameListLoad{
   tag: string,
   gc: ComponentGame,
   multipleLevels: boolean,
-  levelToLoad?: number
+  levelsToLoad?: number[]
 }
 @Component({
   selector: 'app-game',
@@ -131,6 +131,8 @@ export class GameComponent implements OnInit {
 
     var copyList = this.componentsGame
     var preDrawList: ComponentGameListLoad[] = []
+    
+    var excludeOfMultipleLevels = 0
 
     for (let index = 1; index <= this.mapTileLayers; index++) {
       copyList.map((v, i) => {
@@ -140,7 +142,7 @@ export class GameComponent implements OnInit {
               tag: v.tag,
               gc: v.gc,
               multipleLevels: v.multipleLevels,
-              levelToLoad: index
+              levelsToLoad: [index]
             })
             //v.gc.setLayersLoad(index)
             //v.gc.update()
@@ -171,7 +173,7 @@ export class GameComponent implements OnInit {
 
         this.cam!.update()
         this.preDraw().map((v, i) => {
-          if(v.levelToLoad) v.gc.setLayersLoad(v.levelToLoad)
+          if(v.levelsToLoad) v.gc.setLayersLoad(v.levelsToLoad!)
           v.gc.update()
         })
       this.ctx!.restore()
